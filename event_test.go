@@ -19,7 +19,7 @@ func TestEncode(t *testing.T) {
   payload["nested"] = nested
   
   event := &Event{
-    payload: payload,
+    Payload: payload,
   }
   
   // #Get()

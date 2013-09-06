@@ -7,21 +7,21 @@ import(
 )
 
 type Event struct {
-  payload interface{}
+  Payload interface{}
 }
 
 // Map type asserts to `map`
 func (j *Event) Map() (map[string]interface{}, error) {
   var copy map[string]interface{}
   
-  switch (j.payload).(type) {
+  switch (j.Payload).(type) {
     default:
         return nil, errors.New("type assertion to map[string]interface{} failed")
     case map[string]interface{}:
-        copy, _ = (j.payload).(map[string]interface{})
+        copy, _ = (j.Payload).(map[string]interface{})
     case map[interface{}]interface{}:
         copy = make(map[string]interface{})
-        attrs, _ := (j.payload).(map[interface{}]interface{})
+        attrs, _ := (j.Payload).(map[interface{}]interface{})
         for i, k := range(attrs) {
           st, _ := i.(string)
           copy[st] = k
@@ -49,7 +49,7 @@ func (j *Event) Get(key string) *Event {
 
 // Array type asserts to an `array`
 func (j *Event) Array() ([]interface{}, error) {
-  if a, ok := (j.payload).([]interface{}); ok {
+  if a, ok := (j.Payload).([]interface{}); ok {
     return a, nil
   }
   return nil, errors.New("type assertion to []interface{} failed")
@@ -57,7 +57,7 @@ func (j *Event) Array() ([]interface{}, error) {
 
 // Bool type asserts to `bool`
 func (j *Event) Bool() (bool, error) {
-  if s, ok := (j.payload).(bool); ok {
+  if s, ok := (j.Payload).(bool); ok {
     return s, nil
   }
   return false, errors.New("type assertion to bool failed")
@@ -65,7 +65,7 @@ func (j *Event) Bool() (bool, error) {
 
 // String type asserts to `string`
 func (j *Event) String() (string, error) {
-  if s, ok := (j.payload).(string); ok {
+  if s, ok := (j.Payload).(string); ok {
     return s, nil
   }
   return "", errors.New("type assertion to string failed")
@@ -73,7 +73,7 @@ func (j *Event) String() (string, error) {
 
 // Float64 type asserts to `float64`
 func (j *Event) Float64() (float64, error) {
-  if i, ok := (j.payload).(float64); ok {
+  if i, ok := (j.Payload).(float64); ok {
     return i, nil
   }
   return -1, errors.New("type assertion to float64 failed")
@@ -82,13 +82,13 @@ func (j *Event) Float64() (float64, error) {
 // Int type asserts to `float64` then converts to `int`
 func (j *Event) Int() (int, error) {
   
-  if f, ok := (j.payload).(int); ok {
+  if f, ok := (j.Payload).(int); ok {
     return int(f), nil
   }
-  if f, ok := (j.payload).(int8); ok {
+  if f, ok := (j.Payload).(int8); ok {
     return int(f), nil
   }
-  if f, ok := (j.payload).(float64); ok {
+  if f, ok := (j.Payload).(float64); ok {
     return int(f), nil
   }
   
@@ -97,7 +97,7 @@ func (j *Event) Int() (int, error) {
 
 // Int type asserts to `float64` then converts to `int64`
 func (j *Event) Int64() (int64, error) {
-  if f, ok := (j.payload).(float64); ok {
+  if f, ok := (j.Payload).(float64); ok {
     return int64(f), nil
   }
   
@@ -106,7 +106,7 @@ func (j *Event) Int64() (int64, error) {
 
 // Bytes type asserts to `[]byte`
 func (j *Event) Bytes() ([]byte, error) {
-  if s, ok := (j.payload).(string); ok {
+  if s, ok := (j.Payload).(string); ok {
     return []byte(s), nil
   }
   return nil, errors.New("type assertion to []byte failed")
@@ -119,22 +119,22 @@ type EventsChannel chan *Event
 
 func Decode(payload []byte) (*Event, error) {
   event := &Event{}
-  err := msgpack.Unmarshal(payload, &event.payload, nil)
+  err := msgpack.Unmarshal(payload, &event.Payload, nil)
   return event, err
 }
 
 func Encode(event *Event) (data []byte, err error) {
-  data, err = msgpack.Marshal(&event.payload)
+  data, err = msgpack.Marshal(&event.Payload)
   return
 }
 
 func DecodeJSON(payload []byte) (*Event, error) {
   event := &Event{}
-  err := json.Unmarshal(payload, &event.payload)
+  err := json.Unmarshal(payload, &event.Payload)
   return event, err
 }
 
 func EncodeJSON(event *Event) (data []byte, err error) {
-  data, err = json.Marshal(&event.payload)
+  data, err = json.Marshal(&event.Payload)
   return
 }
