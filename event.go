@@ -1,7 +1,6 @@
 package data
 
 import(
-  "github.com/ugorji/go-msgpack"
   "encoding/json"
   "errors"
 )
@@ -118,13 +117,15 @@ func (j *Event) Bytes() ([]byte, error) {
 type EventsChannel chan *Event
 
 func Decode(payload []byte) (*Event, error) {
-  event := &Event{}
-  err := msgpack.Unmarshal(payload, &event.Payload, nil)
+  // event := &Event{}
+//   err := msgpack.Unmarshal(payload, &event.Payload, nil)
+	event, err := DecodeJSON(payload)
   return event, err
 }
 
 func Encode(event *Event) (data []byte, err error) {
-  data, err = msgpack.Marshal(&event.Payload)
+	data, err = EncodeJSON(event)
+  // data, err = msgpack.Marshal(&event.Payload)
   return
 }
 
